@@ -9,12 +9,20 @@ function surfacesequence(facs::T) where {T <: AbstractFacsimile}
     throw(DomainError(facs, "`surfacesequence` not implemented for type $(T)"))
 end
 
-"""Catch subtypes that fail to implement `textsforsurface` function.
+"""Catch subtypes that fail to implement `diplomaticforsurface` function.
 $(SIGNATURES)
 """
-function textsforsurface(facs::T, surface::Cite2Urn) where {T <: AbstractFacsimile}
-    throw(DomainError(facs, "`textsforsurface` not implemented for type $(T)"))
+function diplomaticforsurface(facs::T, surface::Cite2Urn) where {T <: AbstractFacsimile}
+    throw(DomainError(facs, "`diplomaticforsurface` not implemented for type $(T)"))
 end
+
+"""Catch subtypes that fail to implement `normalizedforsurface` function.
+$(SIGNATURES)
+"""
+function normalizedforsurface(facs::T, surface::Cite2Urn) where {T <: AbstractFacsimile}
+    throw(DomainError(facs, "`normalizedforsurface` not implemented for type $(T)"))
+end
+
 
 """Catch subtypes that fail to implement `imageforsurface` function.
 $(SIGNATURES)
@@ -22,3 +30,5 @@ $(SIGNATURES)
 function imageforsurface(facs::T, surface::Cite2Urn) where {T <: AbstractFacsimile}
     throw(DomainError(facs, "`imageforsurface` not implemented for type $(T)"))
 end
+
+

@@ -5,7 +5,9 @@ using CitableObject
 
 export AbstractFacsimile
 export surfacesequence
-export textsforsurface, imageforsurface
+export imageforsurface, texturnsforsurface
+export diplomaticforsurface, normalizedforsurface
+
 
 include("facsimile.jl")
 
