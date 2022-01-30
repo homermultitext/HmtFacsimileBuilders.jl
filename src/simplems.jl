@@ -1,0 +1,4 @@
+
+struct SimpleMSFacsimile <: AbstractFacsimile
+    
+end

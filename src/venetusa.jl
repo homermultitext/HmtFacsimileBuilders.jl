@@ -1,0 +1,3 @@
+struct VenetusAFacsimile <: AbstractFacsimile
+    
+end

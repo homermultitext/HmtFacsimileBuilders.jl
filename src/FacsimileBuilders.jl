@@ -10,5 +10,7 @@ export diplomaticforsurface, normalizedforsurface
 
 
 include("facsimile.jl")
+include("simplems.jl")
+include("venetusa.jl")
 
 end # module
