@@ -60,15 +60,24 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
         for tripl in iliad
             namelink = "il_" * passagecomponent(tripl.passage)
             push!(psgs, passagecomponent(tripl.passage) * " <a name =\"$(namelink)\"/>")
+            xreff  = filter(pr -> urncontains(tripl.passage, pr[2]), vafacs.scholiaindex)
+            if isempty(xreff)
+            else
+               scholreff = map(pr -> pr[1], xreff)
+               push!(psgs, join(scholreff, "\n"))
+            end
+            push!(psgs, "\n\n---\n\n")
         end
-        push!(pgtxt, join(psgs, "\n\n---\n\n"))
+        push!(pgtxt, join(psgs, "\n\n"))
     end
+
+
     # collect non-Iliad psgs
     othertexts = filter(trip -> ! urncontains(iliadurn, trip.passage),  pagedse)
     if ! isempty(othertexts)
         othercount = length(othertexts)
         push!(pgtxt, "### Other texts\n\n($(othercount) passages)")
-        push!(pgtxt, "See [Iliad lines](#iliad)")
+        
 
         scholia = []
         for tripl in othertexts

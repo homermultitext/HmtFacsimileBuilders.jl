@@ -13,7 +13,8 @@ function vabuilder(hmt::Archive)
     mspages = filter(c -> !isnothing(c), codicesraw)
     vapages = filter( pg -> urncontains(Cite2Urn("urn:cite2:hmt:msA:"), pg.urn), mspages)
     @info("4/4. Indexing scholia to Iliad passages")
-    index = commentpairs(hmt)
+    rawindex = commentpairs(hmt)
+    index = filter(pr -> ! isnothing(pr[2]), rawindex)
     VenetusAFacsimile(triples, dip, vapages, index)
 end
 
