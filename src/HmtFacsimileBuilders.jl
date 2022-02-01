@@ -3,8 +3,9 @@ using Documenter, DocStringExtensions
 
 using CitableBase, CiteEXchange
 using CitableText, CitableCorpus
-using CitablePhysicalText
 using CitableObject
+using CitableImage
+using CitablePhysicalText
 
 using EditorsRepo, HmtArchive
 
@@ -17,6 +18,7 @@ export SimpleHmtFacsimile
 export VenetusAFacsimile, vabuilder
 export vapages, vapage
 
+include("constants.jl")
 include("facsimile.jl")
 include("simplems.jl")
 include("venetusa.jl")

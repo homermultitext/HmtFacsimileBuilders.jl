@@ -37,11 +37,13 @@ function vapages(vafacs::VenetusAFacsimile; selection = [], navigation = true)
     mdpages
 end
 
-function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true)
+function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thumbheight = 200)
     pgtxt = []
     mdheader = mdpageheader(vafacs, pg)
     # pg header
     push!(pgtxt, mdheader)
+    # thumbnail image
+    # mdimg = linkedMarkdownImage(ICT, pr[2], IIIF; ht=thumbheight, caption="image")
     # collect psgs
     psgs = []
     pagedse = filter(trip -> trip.surface == pg, vafacs.dsec.data)
