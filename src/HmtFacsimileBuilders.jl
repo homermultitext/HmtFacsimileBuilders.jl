@@ -21,6 +21,7 @@ export vapages, vapage
 include("constants.jl")
 include("facsimile.jl")
 include("simplems.jl")
+include("vaarchive.jl")
 include("venetusa.jl")
 
 end # module
