@@ -16,7 +16,7 @@ export diplomaticforsurface, normalizedforsurface
 
 export SimpleHmtFacsimile
 export VenetusAFacsimile, vabuilder
-export vapages, vapage
+export writevapages, vapages, vapage
 
 include("constants.jl")
 include("facsimile.jl")

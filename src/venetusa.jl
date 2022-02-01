@@ -32,16 +32,80 @@ $(SIGNATURES)
 """
 function vapages(vafacs::VenetusAFacsimile; selection = [], navigation = true)
     pagelist = isempty(selection) ? map(pg -> pg.urn, vafacs.codex) : selection
-    mdpages = []
+    mdpages = AbstractString[]
+    filenames = AbstractString[]
     for pg in pagelist
         push!(mdpages, vapage(vafacs, pg, navigation = navigation))
+        push!(filenames, fname(pg))
     end
-    mdpages
+    (mdpages, filenames)
 end
 
-function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thumbheight = 200)
-    navlink = navigation ? navlinks(vafacs, pg) : ""
+"""Write Venetus A facsimile pages to a local file.
+$(SIGNATURES)
+"""
+function writevapages(vafacs::VenetusAFacsimile; 
+    selection = [], 
+    navigation = true,
+    basedir = nothing)
+    targetdir = isnothing(basedir) ? pwd() : basedir
+    (markdown, filenames) = vapages(vafacs, selection = selection, navigation = navigation)
+    for i in eachindex(markdown)
+        outfile = joinpath(targetdir, filenames[i])
+        @info("Writing file $(outfile)")
+        open(outfile, "w") do io
+            write(io, markdown[i])
+        end
+    end
+end
 
+"""Generate file name from URN.
+$(SIGNATURES)
+"""
+function fname(pg::Cite2Urn)
+    siglum = parts(collectioncomponent(pg))[1]
+    pieces = [siglum,
+    objectcomponent(pg),
+    "md"
+    ]
+    join(pieces, ".")
+end
+
+function iliadheader(ref::CtsUrn)
+        namelink = "il_" *  passagecomponent(ref)
+        join([
+            "\n\n---\n\n<a name =\"$(namelink)\"/>",
+             "*Iliad* $(passagecomponent(ref))"
+        ])
+end
+
+
+function markdownpassage(tripl::DSETriple, c::CitableTextCorpus; thumbheight = 500)
+    texts = filter(psg -> urncontains(tripl.passage, psg.urn), c.passages)
+    caption = "Image: " * string(tripl.passage)
+    imgmd = linkedMarkdownImage(ICT, tripl.image, IIIF; ht=thumbheight, caption=caption)
+
+    txtdisplay = []
+    for psg in texts
+        push!(txtdisplay, psg.text)
+    end
+    join(
+        [
+        imgmd,
+        join(txtdisplay, " ") 
+        ],
+        "\n\n"
+    )
+    
+
+end
+
+"""Compose markdown facsimile for a single page of the Venetus A manuscript.
+$(SIGNATURES)
+"""
+function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thumbheight = 200)
+    @info("Formatting markdown page for $(pg)")
+    navlink = navigation ? navlinks(vafacs, pg) : ""
     pgtxt = []
     # pg header
     push!(pgtxt,  mdpageheader(vafacs, pg))
@@ -58,12 +122,10 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
         push!(pgtxt, "### *Iliad*\n\n($(psgcount) lines) <a name=\"iliad\"/>")
         psgs = []
         for tripl in iliad
-            namelink = "il_" * passagecomponent(tripl.passage)
-            push!(psgs, "\n\n---\n\n<a name =\"$(namelink)\"/>")
-            push!(psgs, "*Iliad* $(passagecomponent(tripl.passage))")
-
+            push!(psgs, iliadheader(tripl.passage))
+            push!(psgs, markdownpassage(tripl, vafacs.corpus))
             xreff  = filter(pr -> urncontains(tripl.passage, pr[2]), vafacs.scholiaindex)
-            @warn("On $(namelink) found $(length(xreff)) scholia")
+            #@debug("On $(namelink) found $(length(xreff)) scholia")
             if isempty(xreff)
             else
                 
@@ -73,7 +135,7 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
                scholdiplayids = map(u -> workparts(u)[2] * " " * passagecomponent(u), scholreff)
                paired = zip(schollnkids, scholdiplayids)
                namelinklist = map(pr -> "[$(pr[2])](#$(pr[1]))", paired)
-               @warn("So have namelinks for $(length(namelinklist))")
+               @debug("So have namelinks for $(length(namelinklist))")
             
             push!(psgs, "Commented on by " * join(namelinklist, ", "))
 
@@ -96,6 +158,7 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
             anchorname = workparts(tripl.passage)[2] * "_" * passagecomponent(tripl.passage)
             display = workparts(tripl.passage)[2] * " " * passagecomponent(tripl.passage)
             push!(scholia, display)
+            push!(scholia, markdownpassage(tripl, vafacs.corpus))
             anchorlink = "<a name=\"$(anchorname)\"/>"
             push!(scholia, anchorlink)
             xreff  = filter(pr -> urncontains(tripl.passage, pr[1]), vafacs.scholiaindex)
@@ -103,7 +166,11 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
             else
                 ilurn = xreff[1][2]
                 ilipsg = passagecomponent(ilurn)
-                linkname = "il_" * passagecomponent(ilurn)
+                linkname = if CitableText.isrange(ilurn)
+                    "il_" * range_begin(ilurn)
+                else
+                    "il_" * passagecomponent(ilurn)
+                end
                 push!(scholia, "On *Iliad* [$(ilipsg)](#$(linkname))")
                 push!(scholia, "\n\n---\n\n")
             end
