@@ -66,13 +66,17 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
             @warn("On $(namelink) found $(length(xreff)) scholia")
             if isempty(xreff)
             else
+                
                scholreff = map(pr -> pr[1], xreff)
 
                schollnkids = map(u -> workparts(u)[2] * "_" * passagecomponent(u), scholreff)
-               
-               namelinklist = map(id -> "[$(id)](#$(id))", schollnkids)
+               scholdiplayids = map(u -> workparts(u)[2] * " " * passagecomponent(u), scholreff)
+               paired = zip(schollnkids, scholdiplayids)
+               namelinklist = map(pr -> "[$(pr[2])](#$(pr[1]))", paired)
                @warn("So have namelinks for $(length(namelinklist))")
-               push!(psgs, join(scholreff, join(namelinklist, " ")))
+            
+            push!(psgs, "Commented on by " * join(namelinklist, ", "))
+
             end
            
         end
