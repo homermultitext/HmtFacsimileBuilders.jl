@@ -30,15 +30,22 @@ end
 of all pages. Optionally, a list of page URNs can be provided in  `selection`.
 $(SIGNATURES)
 """
-function vapages(vafacs::VenetusAFacsimile; selection = [], navigation = true)
+function vapages(vafacs::VenetusAFacsimile; selection = [], navigation = true,   basedir = nothing)
+    targetdir = isnothing(basedir) ? pwd() : basedir
     pagelist = isempty(selection) ? map(pg -> pg.urn, vafacs.codex) : selection
     mdpages = AbstractString[]
-    filenames = AbstractString[]
+    #filenames = AbstractString[]
     for pg in pagelist
-        push!(mdpages, vapage(vafacs, pg, navigation = navigation))
-        push!(filenames, fname(pg))
+        #push!(mdpages, vapage(vafacs, pg, navigation = navigation))
+        pagemd =  vapage(vafacs, pg, navigation = navigation)
+        outfile = joinpath(targetdir, fname(pg))
+        @info("Writing file $(outfile)")
+        open(outfile, "w") do io
+            write(io, pagemd)
+        end
+        #push!(filenames, fname(pg))
     end
-    (mdpages, filenames)
+    #(mdpages, filenames)
 end
 
 """Write Venetus A facsimile pages to a local file.
