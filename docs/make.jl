@@ -10,7 +10,7 @@ using Pkg
 Pkg.activate(".")
 Pkg.instantiate()
 
-using Documenter, DocStringExtensions, FacsimileBuilders
+using Documenter, DocStringExtensions, HmtFacsimileBuilders
 
 makedocs(
     sitename = "FacimileBuilders Documentation",

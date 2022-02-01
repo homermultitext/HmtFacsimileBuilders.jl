@@ -9,6 +9,9 @@ function surfacesequence(facs::T) where {T <: AbstractFacsimile}
     throw(DomainError(facs, "`surfacesequence` not implemented for type $(T)"))
 end
 
+
+
+
 """Catch subtypes that fail to implement `diplomaticforsurface` function.
 $(SIGNATURES)
 """

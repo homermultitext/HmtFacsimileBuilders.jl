@@ -1,15 +1,21 @@
-module FacsimileBuilders
+module HmtFacsimileBuilders
 using Documenter, DocStringExtensions
 
+using CitableBase, CiteEXchange
+using CitableText, CitableCorpus
+using CitablePhysicalText
 using CitableObject
+
+using EditorsRepo, HmtArchive
 
 export AbstractFacsimile
 export surfacesequence
 export imageforsurface, texturnsforsurface
 export diplomaticforsurface, normalizedforsurface
 
-export SimpleMSFacsimile
-export VenetusAFacsimile
+export SimpleHmtFacsimile
+export VenetusAFacsimile, vabuilder
+export vapages, vapage
 
 include("facsimile.jl")
 include("simplems.jl")
