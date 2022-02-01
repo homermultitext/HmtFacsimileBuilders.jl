@@ -59,14 +59,22 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
         psgs = []
         for tripl in iliad
             namelink = "il_" * passagecomponent(tripl.passage)
-            push!(psgs, passagecomponent(tripl.passage) * " <a name =\"$(namelink)\"/>")
+            push!(psgs, "\n\n---\n\n<a name =\"$(namelink)\"/>")
+            push!(psgs, "*Iliad* $(passagecomponent(tripl.passage))")
+
             xreff  = filter(pr -> urncontains(tripl.passage, pr[2]), vafacs.scholiaindex)
+            @warn("On $(namelink) found $(length(xreff)) scholia")
             if isempty(xreff)
             else
                scholreff = map(pr -> pr[1], xreff)
-               push!(psgs, join(scholreff, "\n"))
+
+               schollnkids = map(u -> workparts(u)[2] * "_" * passagecomponent(u), scholreff)
+               
+               namelinklist = map(id -> "[$(id)](#$(id))", schollnkids)
+               @warn("So have namelinks for $(length(namelinklist))")
+               push!(psgs, join(scholreff, join(namelinklist, " ")))
             end
-            push!(psgs, "\n\n---\n\n")
+           
         end
         push!(pgtxt, join(psgs, "\n\n"))
     end
@@ -81,28 +89,26 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
 
         scholia = []
         for tripl in othertexts
-            push!(scholia, tripl.passage)
+            anchorname = workparts(tripl.passage)[2] * "_" * passagecomponent(tripl.passage)
+            display = workparts(tripl.passage)[2] * " " * passagecomponent(tripl.passage)
+            push!(scholia, display)
+            anchorlink = "<a name=\"$(anchorname)\"/>"
+            push!(scholia, anchorlink)
             xreff  = filter(pr -> urncontains(tripl.passage, pr[1]), vafacs.scholiaindex)
             if isempty(xreff)
             else
                 ilurn = xreff[1][2]
                 ilipsg = passagecomponent(ilurn)
                 linkname = "il_" * passagecomponent(ilurn)
-                push!(scholia, "Comments on [$(ilipsg)](#$(linkname))")
+                push!(scholia, "On *Iliad* [$(ilipsg)](#$(linkname))")
+                push!(scholia, "\n\n---\n\n")
             end
 
-            #for xref in 
-             #   push!(scholia, "Comments on Iliad " * xref[2])
-            #end
-        end
-        push!(pgtxt, join(scholia, "\n\n----\n\n"))
+                end
+        push!(pgtxt, join(scholia, "\n\n"))
 
     end
-    #=
-    psgmd = join(psgs, "\n\n---\n\n")
-    @warn("Adding to pgtxt $(psgmd)")
-    push!(pgtxt, psgmd)
-    =#
+
     # Add footer
     push!(pgtxt, navlink)
 
