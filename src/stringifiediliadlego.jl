@@ -32,4 +32,5 @@ $(SIGNATURES)
 """
 function stringified_iliad_page(lego::StringifiedIliadLego; navigation = true)
     @info("Formatting markdown page for $(lego.pagelabel)")
+    lego
 end

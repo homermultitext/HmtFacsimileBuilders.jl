@@ -30,6 +30,8 @@ export StringifiedIliadLego, stringified_iliad_page
 export facsimile 
 
 include("constants.jl")
+include("outputtypes.jl")
+
 include("abstractfacsimile.jl")
 include("abstractlego.jl")
 include("abstractms.jl")

@@ -86,12 +86,16 @@ the highly performant `startswith` function.
 
 In addition, image references are replaced     
 """
-function stringify(iliad::CitableIliadFacsimile)
+function stringify(iliad::CitableIliadFacsimile; outputformat = MARKDOWN)
     iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
     otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
 
-    iliaddsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
-    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
+    #outformat = isnothing(outputformat) : HmtFacsimileBuilders.MARKDOWN
+    imgembedder  =  outputformat == MARKDOWN ? linkedMarkdownImage : linkedHtmlImage
+
+
+    iliaddsestrings = map(tripl -> (string(tripl.passage), imgembedder(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
+    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), imgembedder(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
 
     dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
     normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
@@ -115,9 +119,9 @@ end
 """Convert `MSPage` object to tuple of markdown.
 $(SIGNATURES)
 """
-function stringify(pg::MSPage)
-    mdimg = linkedMarkdownImage(ICT, pg.image, IIIF)
-    (string(pg.urn), pg.label, pg.rv, mdimg, pg.sequence, fname(pg.urn))
+function stringify(pg::MSPage, outputformat =  MARKDOWN)
+    embeddedimg =  outputformat == MARKDOWN ?  linkedMarkdownImage(ICT, pg.image, IIIF) : linkedHtmlImage(ICT, pg.image, IIIF)
+    (string(pg.urn), pg.label, pg.rv, embeddedimg, pg.sequence, fname(pg.urn))
 end
 
 
