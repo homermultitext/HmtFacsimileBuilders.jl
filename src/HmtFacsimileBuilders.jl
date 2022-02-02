@@ -30,13 +30,13 @@ export MarkdownPageLego
 export facsimile 
 
 include("constants.jl")
-include("facsimile.jl")
-include("msfacsimile.jl")
-include("iliad.jl")
+include("abstractfacsimile.jl")
+include("abstractms.jl")
+include("abstractiliad.jl")
 include("citableiliad.jl")
 include("stringifiediliad.jl")
-include("utils.jl")
 
+include("utils.jl")
 include("hmtarchive.jl")
 
 #include("venetusa.jl")
