@@ -16,17 +16,33 @@ function surfaces(iliad::MarkdownIliad)
     map(pg -> pg[1], iliad.codex)
 end
 
+
+"""Prepackaged components for building a markdown
+facsimile for a single page.  The components are:
+
+- `filename`: automatically generated file name
+- `pagelabel`: human-readable title for the page
+- `thumbnail`: markdown to display thumbnail image of the page linked to ICT
+- `rv`: `recto` or `verso`.  Useful in designing 2-page layouts
+- `iliadtexttuples`: a Vector of triples.  Each triple contains:
+    1. the URN of the text passage
+    2. the text of the passage
+    3. markdown to display the image indexed for the text, linked to ICT
+- `othertexttuples`: a Vector of triples with the same structure as `iliadtexttuples`  
+- `iliadtoscholia`: TBA
+- `scholiatoiliad`: TBA
+- `prevnext`: a `Tuple` with file names for preceding and following page.
+"""
 struct MarkdownPageLego
-    # previd
-    # nextid
-    filename
-    pagelabel
-    thumbnail
-    rv
-    iliadtexttuples
-    othertexttuples
-    iliadtoscholia
-    scholiatoiliad
+    filename::AbstractString
+    pagelabel::AbstractString
+    thumbnail::AbstractString
+    rv::AbstractString
+    iliadtexttuples::Vector{Tuple{String, String, String}}
+    othertexttuples::Vector{Tuple{String, String, String}}
+    iliadtoscholia # TBA
+    scholiatoiliad # TBA
+    prevnext::Tuple{String, String}
 end
 
 """Construct a `StringifiedIliad` from a `CitableIliad`.
@@ -98,6 +114,10 @@ $(SIGNATURES)
 """
 function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
     @info("Format data for $(pg)")
+    idx = findfirst(tup -> tup[1] == pg, iliad.codex)
+    prev = idx == 1 ? "" :  iliad.codex[idx - 1][6]
+    nxt = idx == length(iliad.codex) ? "" : iliad.codex[idx + 1][6]
+    prevnext = (prev, nxt)
     pginfo = filter(p -> startswith(p[1], pg),  iliad.codex)[1]
     pagelabel = pginfo[2]
     rv = pginfo[3]
@@ -138,6 +158,7 @@ function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
         rv, 
         iliaddiplpsg, 
         otherdiplpsg,
-        [], []
+        [], [],
+        prevnext
         )
 end
