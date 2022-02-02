@@ -25,6 +25,9 @@ export scholiaindex
 # Concrete implementations:
 export CitableIliad, hmtcitable
 export MarkdownIliad, stringify
+export MarkdownPageLego
+
+export facsimile 
 
 include("constants.jl")
 include("facsimile.jl")

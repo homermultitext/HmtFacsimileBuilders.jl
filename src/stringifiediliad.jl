@@ -12,16 +12,21 @@ struct MarkdownIliad <: IliadFacsimile
     scholiaindex
 end
 
+function surfaces(iliad::MarkdownIliad)
+    map(pg -> pg[1], iliad.codex)
+end
+
 struct MarkdownPageLego
     # previd
     # nextid
-    # filename
-    # page label
-    # rv
+    filename
+    pagelabel
+    thumbnail
+    rv
     iliadtexttuples
     othertexttuples
-    # links: iliad to scholia
-    # backlinks: scholia to iliad
+    iliadtoscholia
+    scholiatoiliad
 end
 
 """Construct a `StringifiedIliad` from a `CitableIliad`.
@@ -68,33 +73,44 @@ function stringify(pg::MSPage)
 end
 
 
+function facsimile(iliad::MarkdownIliad; 
+    selection = [], navigation = true)
+    pagelist = isempty(selection) ? surfaces(iliad) : selection
+    for pg in pagelist
+        pglego = dataforpage(iliad, pg)
+        mdpage(pglego, navigation = navigation)
+        # Write to file
+    end
+end
 
 """Compose markdown facsimile for a single page of the Venetus A manuscript.
 $(SIGNATURES)
 """
-function mspage(iliad::MarkdownIliad, pg::AbstractString; navigation = true)
-    @info("Formatting markdown page for $(pg)")
-    pgdata = dataforpage(iliad, pg)
-
+function mdpage(lego::MarkdownPageLego; 
+    navigation = true)
+    @info("Formatting markdown page for $(lego.pagelabel)")
 end
 
 
 
-"""
+"""Assemble a lego block of text structures for a single page.
+$(SIGNATURES)
 """
 function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
     @info("Format data for $(pg)")
-    pginfo = filter(pg -> startswith(pg[1], pg12r),  mdiliad.codex)[1]
+    pginfo = filter(p -> startswith(p[1], pg),  iliad.codex)[1]
     pagelabel = pginfo[2]
     rv = pginfo[3]
-
+    img = pginfo[4]
+    fname = pginfo[6]
+    
     iliaddses = filter(tup -> startswith(tup[3],pg), iliad.iliaddse)
     # Unify text ref, text content and image:
     iliaddiplpsg = Tuple{String, String, String}[]
     for (txturn,img) in map(tup -> (tup[1], tup[2]), iliaddses)
         psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticiliad)
         if isempty(psgpair)
-            @warn("FAILED ON $(txturn)")
+            @debug("NO ILIAD TEXTS indexed for $(txturn)")
         else
             push!(iliaddiplpsg, (psgpair[1][1], psgpair[1][2], img))
         end
@@ -105,7 +121,7 @@ function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
     for (txturn,img) in map(tup -> (tup[1], tup[2]), otherdses)
         psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticother)
         if isempty(psgpair)
-            @warn("FAILED ON $(txturn)")
+            @debug("NO NON-ILIADIC TEXTS indexed $(txturn)")
         else
             push!(otherdiplpsg, (psgpair[1][1], psgpair[1][2], img))
         end
@@ -115,5 +131,13 @@ function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
     # scholia -> iliad index
     # iliad -> scholia index
 
-    MarkdownPageLego(iliaddiplpsg, otherdiplpsg)
+    MarkdownPageLego(
+        fname,
+        pagelabel, 
+        img,
+        rv, 
+        iliaddiplpsg, 
+        otherdiplpsg,
+        [], []
+        )
 end
