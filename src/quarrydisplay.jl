@@ -7,7 +7,7 @@ struct VenetusAFacsimile <: AbstractFacsimile
 end
 
 
-function mdpageheader(va::VenetusAFacsimile, pg::Cite2Urn)
+function stringified_iliad_mdpageheader(va::VenetusAFacsimile, pg::Cite2Urn)
     matches = filter(p -> urnequals(pg, p.urn), va.codex)
     if length(matches) == 1
         "## $(matches[1] |> label)"
@@ -19,7 +19,7 @@ function mdpageheader(va::VenetusAFacsimile, pg::Cite2Urn)
     end
 end
 
-function mdpagethumb(va::VenetusAFacsimile, pg::Cite2Urn; thumbheight = 200)
+function stringified_iliad_mdpagethumb(va::VenetusAFacsimile, pg::Cite2Urn; thumbheight = 200)
     p = filter(p -> p.urn == pg, va.codex)[1]
     caption = "Overview image: " * p.label
     linkedMarkdownImage(ICT, p.image, IIIF; ht=thumbheight, caption=caption)
@@ -30,15 +30,22 @@ end
 of all pages. Optionally, a list of page URNs can be provided in  `selection`.
 $(SIGNATURES)
 """
-function vapages(vafacs::VenetusAFacsimile; selection = [], navigation = true)
+function vapages(vafacs::VenetusAFacsimile; selection = [], navigation = true,   basedir = nothing)
+    targetdir = isnothing(basedir) ? pwd() : basedir
     pagelist = isempty(selection) ? map(pg -> pg.urn, vafacs.codex) : selection
-    mdpages = AbstractString[]
-    filenames = AbstractString[]
+    stringified_iliad_mdpages = AbstractString[]
+    #filenames = AbstractString[]
     for pg in pagelist
-        push!(mdpages, vapage(vafacs, pg, navigation = navigation))
-        push!(filenames, fname(pg))
+        #push!(stringified_iliad_mdpages, vapage(vafacs, pg, navigation = navigation))
+        pagemd =  vapage(vafacs, pg, navigation = navigation)
+        outfile = joinpath(targetdir, fname(pg))
+        @info("Writing file $(outfile)")
+        open(outfile, "w") do io
+            write(io, pagemd)
+        end
+        #push!(filenames, fname(pg))
     end
-    (mdpages, filenames)
+    #(stringified_iliad_mdpages, filenames)
 end
 
 """Write Venetus A facsimile pages to a local file.
@@ -108,10 +115,10 @@ function vapage(vafacs::VenetusAFacsimile, pg::Cite2Urn; navigation = true, thum
     navlink = navigation ? navlinks(vafacs, pg) : ""
     pgtxt = []
     # pg header
-    push!(pgtxt,  mdpageheader(vafacs, pg))
+    push!(pgtxt,  stringified_iliad_mdpageheader(vafacs, pg))
     push!(pgtxt,  navlink)
     # thumbnail image
-    push!(pgtxt, mdpagethumb(vafacs, pg))
+    push!(pgtxt, stringified_iliad_mdpagethumb(vafacs, pg))
     
     pagedse = filter(trip -> trip.surface == pg, vafacs.dsec.data)
     # collect Iliad psgs
