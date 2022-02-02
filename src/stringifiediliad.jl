@@ -2,12 +2,12 @@
 as structures with markdown string values optimized for performance.
 """
 struct MarkdownIliad <: IliadFacsimile
-    dsec#::DSECollection
-    diplomaticiliad#::CitableTextCorpus
-    diplomaticother#::CitableTextCorpus
-    normalizediliad#::CitableTextCorpus
-    normalizedother#::CitableTextCorpus
-    codex#::Vector{MSPage}
+    dsec
+    diplomaticiliad
+    diplomaticother
+    normalizediliad
+    normalizedother
+    codex
     scholiaindex
 end
 
@@ -22,6 +22,8 @@ the highly performant `startswith` function.
 In addition, image references are replaced     
 """
 function stringify(iliad::CitableIliad)
+    ## NEED TO SEPARATE ILIAD AND OTHER DSE, AND 
+    # NORMALIZE THOSE TEXT URNS
     dsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliad.dsec.data)
 
     dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
@@ -42,7 +44,41 @@ function stringify(iliad::CitableIliad)
     )
 end
 
+"""Convert `MSPage` object to tuple of markdown.
+$(SIGNATURES)
+"""
 function stringify(pg::MSPage)
     mdimg = linkedMarkdownImage(ICT, pg.image, IIIF)
-    (string(pg.urn), pg.label, pg.rv, mdimg, pg.sequence)
+    (string(pg.urn), pg.label, pg.rv, mdimg, pg.sequence, fname(pg.urn))
+end
+
+
+
+"""Compose markdown facsimile for a single page of the Venetus A manuscript.
+$(SIGNATURES)
+"""
+function mspage(iliad::MarkdownIliad, pg::AbstractString; navigation = true)
+    @info("Formatting markdown page for $(pg)")
+    pgdata = dataforpage(iliad, pg)
+
+end
+
+
+"""
+"""
+function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
+    pagedse = filter(tup -> startswith(tup[3],pg), iliad.dsec)
+
+    datatemp = []
+    for (txturn,img) in map(tup -> (tup[1], tup[2]), pagedse)
+        psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticiliad)
+        if isempty(psgpair)
+            @warn("FAILED ON $(txturn)")
+        else
+            push!(datatemp, (psgpair, img))
+        end
+    end
+   datatemp 
+   pagedse
+
 end

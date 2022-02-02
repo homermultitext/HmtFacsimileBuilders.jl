@@ -32,6 +32,7 @@ include("msfacsimile.jl")
 include("iliad.jl")
 include("citableiliad.jl")
 include("stringifiediliad.jl")
+include("utils.jl")
 
 include("hmtarchive.jl")
 #include("simplems.jl")
