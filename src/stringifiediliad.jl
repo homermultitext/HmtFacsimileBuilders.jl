@@ -60,9 +60,25 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
         end
     end
 
+    iliadtoscholia = Dict{String, Vector{String}}()
+    for tripleset in iliaddses
+        @warn("Looking for $(tripleset[1])")
+        pairs = filter(pr -> pr[2] ==  tripleset[1], iliad.scholiaindex)
+        if ! isempty(pairs)
+            schollist = map(tup -> tup[1], pairs)
+            iliadtoscholia[tripleset[1]] = schollist
+        end
+    end
 
-    # scholia -> iliad index
-    # iliad -> scholia index
+    scholiatoiliad = Dict{String, Vector{String}}()
+    for tripleset in otherdses
+        @warn("Looking for $(tripleset[1])")
+        pairs = filter(pr -> pr[1] ==  tripleset[1], iliad.scholiaindex)
+        if ! isempty(pairs)
+            iliadlist = map(tup -> tup[1], pairs)
+            scholiatoiliad[tripleset[1]] = iliadlist
+        end
+    end
 
     StringifiedIliadLego(
         fname,
@@ -71,7 +87,8 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
         rv, 
         iliaddiplpsg, 
         otherdiplpsg,
-        [], [],
+        iliadtoscholia,
+        scholiatoiliad, 
         prevnext
         )
 end
@@ -90,9 +107,7 @@ function stringify(iliad::CitableIliadFacsimile; outputformat = MARKDOWN)
     iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
     otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
 
-    #outformat = isnothing(outputformat) : HmtFacsimileBuilders.MARKDOWN
     imgembedder  =  outputformat == MARKDOWN ? linkedMarkdownImage : linkedHtmlImage
-
 
     iliaddsestrings = map(tripl -> (string(tripl.passage), imgembedder(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
     otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), imgembedder(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
