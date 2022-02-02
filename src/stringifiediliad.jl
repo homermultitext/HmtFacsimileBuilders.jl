@@ -2,7 +2,8 @@
 as structures with markdown string values optimized for performance.
 """
 struct MarkdownIliad <: IliadFacsimile
-    dsec
+    iliaddse
+    otherdse
     diplomaticiliad
     diplomaticother
     normalizediliad
@@ -24,7 +25,11 @@ In addition, image references are replaced
 function stringify(iliad::CitableIliad)
     ## NEED TO SEPARATE ILIAD AND OTHER DSE, AND 
     # NORMALIZE THOSE TEXT URNS
-    dsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliad.dsec.data)
+    iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
+    otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
+
+    iliaddsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
+    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
 
     dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
     normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
@@ -36,7 +41,8 @@ function stringify(iliad::CitableIliad)
     scholindex = map(pr -> (string(dropversion(pr[1])), string(pr[2])) , iliad.scholiaindex)
 
     MarkdownIliad(
-        dsestrings,
+        iliaddsestrings, 
+        otherdsestrings,
         dipliliad, normediliad,
         diplother, normedother,
         pagedata,

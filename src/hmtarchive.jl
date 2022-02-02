@@ -3,7 +3,7 @@
 $(SIGNATURES)
 """
 function hmtcitable(hmt::Archive)
-    @info("Assembling facsimile builder for Venetus A MS")
+    @info("Assembling facsimile builder for citable content of HMT archive")
     @info("1/5. Loading diplomatic corpus")
     dip = diplomaticcorpus(hmt)
     @info("2/5. Loading normalized corpus")
