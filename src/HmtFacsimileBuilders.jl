@@ -25,7 +25,7 @@ export scholiaindex
 # Concrete implementations:
 export CitableIliad, hmtcitable
 export MarkdownIliad, stringify
-export MarkdownPageLego
+export PageLego
 
 export facsimile 
 

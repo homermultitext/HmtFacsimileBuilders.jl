@@ -33,7 +33,7 @@ facsimile for a single page.  The components are:
 - `scholiatoiliad`: TBA
 - `prevnext`: a `Tuple` with file names for preceding and following page.
 """
-struct MarkdownPageLego
+struct PageLego
     filename::AbstractString
     pagelabel::AbstractString
     thumbnail::AbstractString
@@ -102,7 +102,7 @@ end
 """Compose markdown facsimile for a single page of the Venetus A manuscript.
 $(SIGNATURES)
 """
-function mdpage(lego::MarkdownPageLego; 
+function mdpage(lego::PageLego; 
     navigation = true)
     @info("Formatting markdown page for $(lego.pagelabel)")
 end
@@ -151,7 +151,7 @@ function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
     # scholia -> iliad index
     # iliad -> scholia index
 
-    MarkdownPageLego(
+    PageLego(
         fname,
         pagelabel, 
         img,
