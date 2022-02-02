@@ -12,7 +12,7 @@ using EditorsRepo, HmtArchive
 
 ## Hierarchy of abstract classes and their functions:
 export AbstractFacsimile
-export surfaces, dserecords
+export surfaces
 
 export MSFacsimile
 export rectoversos
@@ -25,7 +25,7 @@ export scholiaindex
 # Concrete implementations:
 export CitableIliadFacsimile, hmtcitable
 export StringifiedIliadFacsimile, stringify
-export StringifiedIliadLego, stringified_iliad_page
+export StringifiedIliadLego, stringified_iliad_mdpage
 
 export facsimile 
 
