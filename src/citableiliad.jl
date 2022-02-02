@@ -1,4 +1,5 @@
-"Builder including unique features of the Venetus A manuscript."
+"""Builder exposing required components of an `IliadFacsimile` 
+as collections of citable content"""
 struct CitableIliad <: IliadFacsimile
     dsec::DSECollection
     diplomatic::CitableTextCorpus

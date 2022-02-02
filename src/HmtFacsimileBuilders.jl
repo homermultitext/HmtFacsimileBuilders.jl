@@ -23,13 +23,15 @@ export diplomaticother, normalizedother
 export scholiaindex
 
 # Concrete implementations:
-export CitableIliad, hmtcitable, hmtstringified
+export CitableIliad, hmtcitable
+export MarkdownIliad, stringify
 
 include("constants.jl")
 include("facsimile.jl")
 include("msfacsimile.jl")
 include("iliad.jl")
 include("citableiliad.jl")
+include("stringifiediliad.jl")
 
 include("hmtarchive.jl")
 #include("simplems.jl")

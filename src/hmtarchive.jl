@@ -1,9 +1,3 @@
-"""Create a `StringifiedIliad` builder from the HMT Archive.
-$(SIGNATURES)
-"""
-function hmtstringified(hmt::Archive)
-    #
-end
 
 """Create a `CitableIliad` builder from the HMT Archive.
 $(SIGNATURES)
