@@ -12,6 +12,17 @@ struct MarkdownIliad <: IliadFacsimile
     scholiaindex
 end
 
+struct MarkdownPageLego
+    # previd
+    # nextid
+    # filename
+    # page label
+    # rv
+    iliadtexttuples
+    othertexttuples
+    # links: iliad to scholia
+    # backlinks: scholia to iliad
+end
 
 """Construct a `StringifiedIliad` from a `CitableIliad`.
 $(SIGNATURES)
@@ -23,13 +34,11 @@ the highly performant `startswith` function.
 In addition, image references are replaced     
 """
 function stringify(iliad::CitableIliad)
-    ## NEED TO SEPARATE ILIAD AND OTHER DSE, AND 
-    # NORMALIZE THOSE TEXT URNS
     iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
     otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
 
     iliaddsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
-    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
+    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
 
     dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
     normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
@@ -70,21 +79,41 @@ function mspage(iliad::MarkdownIliad, pg::AbstractString; navigation = true)
 end
 
 
+
 """
 """
 function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
-    pagedse = filter(tup -> startswith(tup[3],pg), iliad.dsec)
+    @info("Format data for $(pg)")
+    pginfo = filter(pg -> startswith(pg[1], pg12r),  mdiliad.codex)[1]
+    pagelabel = pginfo[2]
+    rv = pginfo[3]
 
-    datatemp = []
-    for (txturn,img) in map(tup -> (tup[1], tup[2]), pagedse)
+    iliaddses = filter(tup -> startswith(tup[3],pg), iliad.iliaddse)
+    # Unify text ref, text content and image:
+    iliaddiplpsg = Tuple{String, String, String}[]
+    for (txturn,img) in map(tup -> (tup[1], tup[2]), iliaddses)
         psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticiliad)
         if isempty(psgpair)
             @warn("FAILED ON $(txturn)")
         else
-            push!(datatemp, (psgpair, img))
+            push!(iliaddiplpsg, (psgpair[1][1], psgpair[1][2], img))
         end
     end
-   datatemp 
-   pagedse
 
+    otherdses = filter(tup -> startswith(tup[3],pg), iliad.otherdse)
+    otherdiplpsg = Tuple{String, String, String}[]
+    for (txturn,img) in map(tup -> (tup[1], tup[2]), otherdses)
+        psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticother)
+        if isempty(psgpair)
+            @warn("FAILED ON $(txturn)")
+        else
+            push!(otherdiplpsg, (psgpair[1][1], psgpair[1][2], img))
+        end
+    end
+
+
+    # scholia -> iliad index
+    # iliad -> scholia index
+
+    MarkdownPageLego(iliaddiplpsg, otherdiplpsg)
 end
