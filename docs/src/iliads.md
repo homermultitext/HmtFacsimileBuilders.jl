@@ -25,6 +25,8 @@ hmtstrings = stringify(hmtcite)
 
 The `stringified_iliad_page` function creates a markdown edition.
 
+Use the `outputformat` to choose `HmtFacsimileBuilders.HTML`; default is `HmtFacsimileBuilders.MARKDOWN`
+
 ```
 facsimile(stringified_iliad_page, hmtstrings)
 ```
