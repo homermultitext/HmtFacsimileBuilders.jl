@@ -51,8 +51,11 @@ function facsimile(
     surfacelist = isempty(selection) ? surfaces(facsbuilder) : selection
     for surf in surfacelist
         lego = legoforsurface(facsbuilder, surf)
+        fname = joinpath(basedir, filename(lego))
         formatted = pageformatter(lego, navigation = navigation)
-        
+        open(fname, "w") do io
+            write(io, formatted)
+        end
     end
 end
 
