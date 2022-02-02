@@ -13,6 +13,7 @@ using EditorsRepo, HmtArchive
 ## Hierarchy of abstract classes and their functions:
 export AbstractFacsimile
 export surfaces
+export facsimile 
 
 export MSFacsimile
 export rectoversos
@@ -22,13 +23,16 @@ export diplomaticiliad, normalizediliad
 export diplomaticother, normalizedother
 export scholiaindex
 
+export Lego
+export filename
+
 # Concrete implementations:
 export CitableIliadFacsimile, hmtcitable
 export StringifiedIliadFacsimile, stringify
 export StringifiedIliadLego
 export stringified_iliad_mdpage, stringified_iliad_mdimage_browser
 
-export facsimile 
+
 
 include("constants.jl")
 include("outputtypes.jl")

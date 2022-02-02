@@ -9,8 +9,21 @@ facsimile
 HmtFacsimileBuilders.legoforsurface
 ```
 
+Other abstract types:
 
-## Iliads
+```@docs
+MSFacsimile
+IliadFacsimile
+```
+
+## The `Lego` abstraction
+
+```@docs
+Lego
+filename
+```
+
+## Concrete *Iliad* facsimile builders
 
 The packaging of HMT *Iliad* texts in Lego pieces:
 

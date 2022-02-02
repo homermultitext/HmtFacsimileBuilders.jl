@@ -62,7 +62,7 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
 
     iliadtoscholia = Dict{String, Vector{String}}()
     for tripleset in iliaddses
-        @warn("Looking for $(tripleset[1])")
+        @debug("Looking for $(tripleset[1])")
         pairs = filter(pr -> pr[2] ==  tripleset[1], iliad.scholiaindex)
         if ! isempty(pairs)
             schollist = map(tup -> tup[1], pairs)
@@ -72,7 +72,7 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
 
     scholiatoiliad = Dict{String, Vector{String}}()
     for tripleset in otherdses
-        @warn("Looking for $(tripleset[1])")
+        @debug("Looking for $(tripleset[1])")
         pairs = filter(pr -> pr[1] ==  tripleset[1], iliad.scholiaindex)
         if ! isempty(pairs)
             iliadlist = map(tup -> tup[1], pairs)

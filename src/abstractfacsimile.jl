@@ -51,8 +51,8 @@ function facsimile(
     surfacelist = isempty(selection) ? surfaces(facsbuilder) : selection
     for surf in surfacelist
         lego = legoforsurface(facsbuilder, surf)
-        pageformatter(lego, navigation = navigation)
-        # Write to file
+        formatted = pageformatter(lego, navigation = navigation)
+        
     end
 end
 
