@@ -23,22 +23,28 @@ export diplomaticother, normalizedother
 export scholiaindex
 
 # Concrete implementations:
-export CitableIliad, hmtcitable
-export MarkdownIliad, stringify
-export PageLego
+export CitableIliadFacsimile, hmtcitable
+export StringifiedIliadFacsimile, stringify
+export StringifiedIliadLego, stringified_iliad_page
 
 export facsimile 
 
 include("constants.jl")
 include("abstractfacsimile.jl")
+include("abstractlego.jl")
 include("abstractms.jl")
 include("abstractiliad.jl")
+
+# Concrete implementations
+# Partial:
 include("citableiliad.jl")
+# Complete:
+include("stringifiediliadlego.jl")
 include("stringifiediliad.jl")
+
 
 include("utils.jl")
 include("hmtarchive.jl")
 
-#include("venetusa.jl")
 
 end # module

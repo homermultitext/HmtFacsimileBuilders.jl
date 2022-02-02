@@ -1,7 +1,16 @@
 # HmtFacsimileBuilders.jl
 
-TBD
+`HmtFacsimileBuilders` is a highly generalized framework for generating static-page websites publishing digital facsimiles of edited texts.
 
-Citable vs. stringified facsimile builders.
+`AbstractFacsimile`:  
 
-Rely on domain knowledge to design structures with string values that can be 
+`surfaces`
+`legoforsurface`
+`facsimile`
+
+
+`Lego`:
+
+`file`
+
+

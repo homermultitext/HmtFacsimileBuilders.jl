@@ -1,5 +1,5 @@
 
-"""Create a `CitableIliad` builder from the HMT Archive.
+"""Create a `CitableIliadFacsimile` builder from the HMT Archive.
 $(SIGNATURES)
 """
 function hmtcitable(hmt::Archive)
@@ -18,7 +18,7 @@ function hmtcitable(hmt::Archive)
     rawindex = commentpairs(hmt)
     index = filter(pr -> ! isnothing(pr[2]), rawindex)
     
-    CitableIliad(triples, dip, normed, vapages, index)
+    CitableIliadFacsimile(triples, dip, normed, vapages, index)
 end
 
 

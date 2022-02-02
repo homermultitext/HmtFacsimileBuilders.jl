@@ -16,6 +16,7 @@ makedocs(
     sitename = "FacimileBuilders Documentation",
     pages = [
         "Home" => "index.md",
+        "HMT Iliads" => "iliads.md",
         "API documentation" => "apis.md"
     ]
 )

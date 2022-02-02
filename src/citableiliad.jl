@@ -1,6 +1,6 @@
 """Builder exposing required components of an `IliadFacsimile` 
 as collections of citable content"""
-struct CitableIliad <: IliadFacsimile
+struct CitableIliadFacsimile <: IliadFacsimile
     dsec::DSECollection
     diplomatic::CitableTextCorpus
     normalized::CitableTextCorpus
@@ -13,7 +13,7 @@ end
 $(SIGNATURES)
 Required by `AbstractFacsimile`.
 """
-function surfaces(iliad::CitableIliad)
+function surfaces(iliad::CitableIliadFacsimile)
     iliad.codex
 end
 
@@ -21,7 +21,7 @@ end
 $(SIGNATURES)
 Required by `AbstractFacsimile`.
 """
-function dserecords(iliad::CitableIliad)
+function dserecords(iliad::CitableIliadFacsimile)
     iliad.dsec
 end
 
@@ -29,7 +29,7 @@ end
 $(SIGNATURES)
 Required by `MSFacsimile`.
 """
-function rectoversos(iliad::CitableIliad)
+function rectoversos(iliad::CitableIliadFacsimile)
     map(pg -> (pg.urn, pg.rv), iliad.codex)
 end
 
@@ -37,7 +37,7 @@ end
 $(SIGNATURES)
 Required by `IliadFacsimile`.
 """
-function diplomaticiliad(iliad::CitableIliad)
+function diplomaticiliad(iliad::CitableIliadFacsimile)
     filter(psg -> urncontains(ILIAD_URN, psg.urn), iliad.diplomatic.passages) |> CitableTextCorpus
 end
 
@@ -45,7 +45,7 @@ end
 $(SIGNATURES)
 Required by `IliadFacsimile`.
 """
-function normalizediliad(iliad::CitableIliad)
+function normalizediliad(iliad::CitableIliadFacsimile)
     filter(psg -> urncontains(ILIAD_URN, psg.urn), iliad.normalized.passages) |> CitableTextCorpus
 end
 
@@ -56,7 +56,7 @@ end
 $(SIGNATURES)
 Required by `IliadFacsimile`.
 """
-function diplomaticother(iliad::CitableIliad)
+function diplomaticother(iliad::CitableIliadFacsimile)
     filter(psg -> ! urncontains(ILIAD_URN, psg.urn), iliad.diplomatic.passages) |> CitableTextCorpus
 end
 
@@ -64,7 +64,7 @@ end
 $(SIGNATURES)
 Required by `IliadFacsimile`.
 """
-function normalizedother(iliad::CitableIliad)
+function normalizedother(iliad::CitableIliadFacsimile)
     filter(psg -> ! urncontains(ILIAD_URN, psg.urn), iliad.normalized.passages) |> CitableTextCorpus
 end
 
@@ -72,6 +72,6 @@ end
 $(SIGNATURES)
 Required by `IliadFacsimile`.
 """
-function scholiaindex(iliad::CitableIliad)
+function scholiaindex(iliad::CitableIliadFacsimile)
     iliad.scholiaindex
 end

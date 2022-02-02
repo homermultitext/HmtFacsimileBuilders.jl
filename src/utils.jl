@@ -1,23 +1,23 @@
-"""Generate file name from URN.
+"""Generate file name from URN for a text-bearing surface.
 $(SIGNATURES)
 """
-function fname(pg::Cite2Urn)
-    siglum = parts(collectioncomponent(pg))[1]
+function fname(surf::Cite2Urn)
+    siglum = parts(collectioncomponent(surf))[1]
     pieces = [siglum,
-    objectcomponent(pg),
+    objectcomponent(surf),
     "md"
     ]
     join(pieces, ".")
 end
 
 
-"""One-step utility function to build a `CitableIliad`
+"""One-step utility function to build a `CitableIliadFacsimile`
 from a clone of the HMT archive in an adjacent directory,
-and convert it to a `MarkdownIliad`.  Both the `CitableIliad`
-and the `MarkdownIliad` are returned in a Tuple.
+and convert it to a `StringifiedIliadFacsimile`.  Both the `CitableIliadFacsimile`
+and the `StringifiedIliadFacsimile` are returned in a Tuple.
 $(SIGNATURES)
 """
-function adjacentmd()
+function adjacentstringified()
     hmtcite = adjacent() |> hmtcitable
     (hmtcite, stringify(hmtcite))
 end

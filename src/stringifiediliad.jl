@@ -1,7 +1,7 @@
 """Builder exposing required components of an `IliadFacsimile` 
 as structures with markdown string values optimized for performance.
 """
-struct MarkdownIliad <: IliadFacsimile
+struct StringifiedIliadFacsimile <: IliadFacsimile
     iliaddse
     otherdse
     diplomaticiliad
@@ -12,107 +12,20 @@ struct MarkdownIliad <: IliadFacsimile
     scholiaindex
 end
 
-function surfaces(iliad::MarkdownIliad)
+"""Find sequence of page identifiers for `iliad`.
+$(SIGNATURES)
+For a `StringifiedIliadFacsimile`, the result is a list of URNs
+represented as string values.
+"""
+function surfaces(iliad::StringifiedIliadFacsimile)
     map(pg -> pg[1], iliad.codex)
 end
-
-
-"""Prepackaged components for building a markdown
-facsimile for a single page.  The components are:
-
-- `filename`: automatically generated file name
-- `pagelabel`: human-readable title for the page
-- `thumbnail`: markdown to display thumbnail image of the page linked to ICT
-- `rv`: `recto` or `verso`.  Useful in designing 2-page layouts
-- `iliadtexttuples`: a Vector of triples.  Each triple contains:
-    1. the URN of the text passage
-    2. the text of the passage
-    3. markdown to display the image indexed for the text, linked to ICT
-- `othertexttuples`: a Vector of triples with the same structure as `iliadtexttuples`  
-- `iliadtoscholia`: TBA
-- `scholiatoiliad`: TBA
-- `prevnext`: a `Tuple` with file names for preceding and following page.
-"""
-struct PageLego
-    filename::AbstractString
-    pagelabel::AbstractString
-    thumbnail::AbstractString
-    rv::AbstractString
-    iliadtexttuples::Vector{Tuple{String, String, String}}
-    othertexttuples::Vector{Tuple{String, String, String}}
-    iliadtoscholia # TBA
-    scholiatoiliad # TBA
-    prevnext::Tuple{String, String}
-end
-
-"""Construct a `StringifiedIliad` from a `CitableIliad`.
-$(SIGNATURES)
-In conversion to string values, text URNs are regularized by dropping
-exemplar IDs from Iliad texts, and dropping version IDs from scholia.
-The equivalent of a `urncontains` comparison can then be done with
-the highly performant `startswith` function.
-
-In addition, image references are replaced     
-"""
-function stringify(iliad::CitableIliad)
-    iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
-    otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
-
-    iliaddsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
-    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
-
-    dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
-    normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
-
-    diplother = map(psg -> (string(dropversion(psg.urn)), psg.text), diplomaticother(iliad).passages)
-    normedother = map(psg -> (string(dropversion(psg.urn)), psg.text), normalizedother(iliad).passages)
-
-    pagedata = map(pg -> stringify(pg), iliad.codex)
-    scholindex = map(pr -> (string(dropversion(pr[1])), string(pr[2])) , iliad.scholiaindex)
-
-    MarkdownIliad(
-        iliaddsestrings, 
-        otherdsestrings,
-        dipliliad, normediliad,
-        diplother, normedother,
-        pagedata,
-        scholindex
-    )
-end
-
-"""Convert `MSPage` object to tuple of markdown.
-$(SIGNATURES)
-"""
-function stringify(pg::MSPage)
-    mdimg = linkedMarkdownImage(ICT, pg.image, IIIF)
-    (string(pg.urn), pg.label, pg.rv, mdimg, pg.sequence, fname(pg.urn))
-end
-
-
-function facsimile(iliad::MarkdownIliad; 
-    selection = [], navigation = true)
-    pagelist = isempty(selection) ? surfaces(iliad) : selection
-    for pg in pagelist
-        pglego = dataforpage(iliad, pg)
-        mdpage(pglego, navigation = navigation)
-        # Write to file
-    end
-end
-
-"""Compose markdown facsimile for a single page of the Venetus A manuscript.
-$(SIGNATURES)
-"""
-function mdpage(lego::PageLego; 
-    navigation = true)
-    @info("Formatting markdown page for $(lego.pagelabel)")
-end
-
 
 
 """Assemble a lego block of text structures for a single page.
 $(SIGNATURES)
 """
-function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
+function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) :: StringifiedIliadLego
     @info("Format data for $(pg)")
     idx = findfirst(tup -> tup[1] == pg, iliad.codex)
     prev = idx == 1 ? "" :  iliad.codex[idx - 1][6]
@@ -151,7 +64,7 @@ function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
     # scholia -> iliad index
     # iliad -> scholia index
 
-    PageLego(
+    StringifiedIliadLego(
         fname,
         pagelabel, 
         img,
@@ -162,3 +75,49 @@ function dataforpage(iliad::MarkdownIliad, pg::AbstractString)
         prevnext
         )
 end
+
+
+"""Construct a `StringifiedIliadFacsimile` from a `CitableIliadFacsimile`.
+$(SIGNATURES)
+In conversion to string values, text URNs are regularized by dropping
+exemplar IDs from Iliad texts, and dropping version IDs from scholia.
+The equivalent of a `urncontains` comparison can then be done with
+the highly performant `startswith` function.
+
+In addition, image references are replaced     
+"""
+function stringify(iliad::CitableIliadFacsimile)
+    iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
+    otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
+
+    iliaddsestrings = map(tripl -> (string(tripl.passage), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
+    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), linkedMarkdownImage(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
+
+    dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
+    normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
+
+    diplother = map(psg -> (string(dropversion(psg.urn)), psg.text), diplomaticother(iliad).passages)
+    normedother = map(psg -> (string(dropversion(psg.urn)), psg.text), normalizedother(iliad).passages)
+
+    pagedata = map(pg -> stringify(pg), iliad.codex)
+    scholindex = map(pr -> (string(dropversion(pr[1])), string(pr[2])) , iliad.scholiaindex)
+
+    StringifiedIliadFacsimile(
+        iliaddsestrings, 
+        otherdsestrings,
+        dipliliad, normediliad,
+        diplother, normedother,
+        pagedata,
+        scholindex
+    )
+end
+
+"""Convert `MSPage` object to tuple of markdown.
+$(SIGNATURES)
+"""
+function stringify(pg::MSPage)
+    mdimg = linkedMarkdownImage(ICT, pg.image, IIIF)
+    (string(pg.urn), pg.label, pg.rv, mdimg, pg.sequence, fname(pg.urn))
+end
+
+
