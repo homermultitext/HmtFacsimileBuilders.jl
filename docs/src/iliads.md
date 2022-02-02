@@ -70,4 +70,6 @@ See the API documentation for more information on optional parameters to the `fa
 
 ## Developing your own page formatter
 
+You can easily write your own page formatter and use it with the `facsimile` function.  It should have a signature accepting one required parameter, a subtype of `Lego`, and one optional parameter, a boolean flag indicating whether or not to include navigation components on the resulting facsimile page.
 
+See the API documentation for details of the `StringifiedIliadLego` structure.

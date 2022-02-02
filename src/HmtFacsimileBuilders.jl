@@ -25,7 +25,8 @@ export scholiaindex
 # Concrete implementations:
 export CitableIliadFacsimile, hmtcitable
 export StringifiedIliadFacsimile, stringify
-export StringifiedIliadLego, stringified_iliad_mdpage
+export StringifiedIliadLego
+export stringified_iliad_mdpage, stringified_iliad_mdimage_browser
 
 export facsimile 
 
