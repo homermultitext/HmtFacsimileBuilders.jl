@@ -1,21 +1,30 @@
-
-"""Create a `VenetusAFacsimile` builder from the HMT Archive.
+"""Create a `StringifiedIliad` builder from the HMT Archive.
 $(SIGNATURES)
 """
-function vabuilder(hmt::Archive)
+function hmtstringified(hmt::Archive)
+    #
+end
+
+"""Create a `CitableIliad` builder from the HMT Archive.
+$(SIGNATURES)
+"""
+function hmtcitable(hmt::Archive)
     @info("Assembling facsimile builder for Venetus A MS")
-    @info("1/4. Loading diplomatic corpus")
+    @info("1/5. Loading diplomatic corpus")
     dip = diplomaticcorpus(hmt)
-    @info("2/4. Loading DSE data")
+    @info("2/5. Loading normalized corpus")
+    normed = normalizedcorpus(hmt)
+    @info("3/5. Loading DSE data")
     triples = dse(hmt)
-    @info("3/4. Loading codex data")
+    @info("4/5. Loading codex data")
     codicesraw = hackcodices(hmt)
     mspages = filter(c -> !isnothing(c), codicesraw)
     vapages = filter( pg -> urncontains(Cite2Urn("urn:cite2:hmt:msA:"), pg.urn), mspages)
-    @info("4/4. Indexing scholia to Iliad passages")
+    @info("5/5. Indexing scholia to Iliad passages")
     rawindex = commentpairs(hmt)
     index = filter(pr -> ! isnothing(pr[2]), rawindex)
-    VenetusAFacsimile(triples, dip, vapages, index)
+    
+    CitableIliad(triples, dip, normed, vapages, index)
 end
 
 

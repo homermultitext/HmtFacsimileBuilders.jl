@@ -9,19 +9,31 @@ using CitablePhysicalText
 
 using EditorsRepo, HmtArchive
 
-export AbstractFacsimile
-export surfacesequence
-export imageforsurface, texturnsforsurface
-export diplomaticforsurface, normalizedforsurface
 
-export SimpleHmtFacsimile
-export VenetusAFacsimile, vabuilder
-export writevapages, vapages, vapage
+## Hierarchy of abstract classes and their functions:
+export AbstractFacsimile
+export surfaces, dserecords
+
+export MSFacsimile
+export rectoversos
+
+export IliadFacsimile
+export diplomaticiliad, normalizediliad
+export diplomaticother, normalizedother
+export scholiaindex
+
+# Concrete implementations:
+export CitableIliad, hmtcitable, hmtstringified
 
 include("constants.jl")
 include("facsimile.jl")
-include("simplems.jl")
-include("vaarchive.jl")
-include("venetusa.jl")
+include("msfacsimile.jl")
+include("iliad.jl")
+include("citableiliad.jl")
+
+include("hmtarchive.jl")
+#include("simplems.jl")
+
+#include("venetusa.jl")
 
 end # module
