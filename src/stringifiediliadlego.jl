@@ -9,10 +9,10 @@ facsimile for a single page.  The components are:
 - `iliadtexttuples`: a Vector of triples.  Each triple contains:
     1. the URN of the text passage
     2. the text of the passage
-    3. markdown to display the image indexed for the text, linked to ICT
+    3. markdown or html to display the image indexed for the text, linked to ICT
 - `othertexttuples`: a Vector of triples with the same structure as `iliadtexttuples`  
-- `iliadtoscholia`: TBA
-- `scholiatoiliad`: TBA
+- `iliadtoscholia`: a `Dict` keyed by *Iliad* URN strings, pointing to a Vector of scholia URN strings
+- `scholiatoiliad`: a `Dict` keyed by scholia URN strings, pointing to a Vector of *Iliad* URN strings
 - `prevnext`: a `Tuple` with file names for preceding and following page.
 """
 struct StringifiedIliadLego <: Lego
@@ -22,15 +22,15 @@ struct StringifiedIliadLego <: Lego
     rv::AbstractString
     iliadtexttuples::Vector{Tuple{String, String, String}}
     othertexttuples::Vector{Tuple{String, String, String}}
-    iliadtoscholia # TBA
-    scholiatoiliad # TBA
+    iliadtoscholia::Dict{String, Vector{String}}
+    scholiatoiliad::Dict{String, Vector{String}}
     prevnext::Tuple{String, String}
 end
 
-"""Compose markdown facsimile for a single page of the Venetus A manuscript.
+"""Compose facsimile for a single page of the Venetus A manuscript.
 $(SIGNATURES)
 """
 function stringified_iliad_page(lego::StringifiedIliadLego; navigation = true)
-    @info("Formatting markdown page for $(lego.pagelabel)")
+    @info("Formatting page for $(lego.pagelabel)")
     lego
 end
