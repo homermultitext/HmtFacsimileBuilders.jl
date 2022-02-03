@@ -1,5 +1,5 @@
 
-"""Compose facsimile for a single page of the Venetus A manuscript.
+"""Compose markdown facsimile for a single page of a manuscript  with overview image and optional navigation links.
 $(SIGNATURES)
 """
 function stringified_iliad_mdimage_browser(lego::StringifiedIliadLego; navigation = true)

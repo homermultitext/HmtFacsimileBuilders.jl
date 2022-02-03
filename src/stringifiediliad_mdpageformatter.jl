@@ -1,6 +1,8 @@
 
-"""Compose facsimile for a single page of the Venetus A manuscript.
+"""Compose markdown facsimile for a single page of an *Iliad* manuscript.
 $(SIGNATURES)
+The display includes texts, if any, with two-way links between *Iliad* lines
+and *scholia* commenting on them.
 """
 function stringified_iliad_mdpage(lego::StringifiedIliadLego; navigation = true)
     @info("Formatting page for $(lego.pagelabel)")
