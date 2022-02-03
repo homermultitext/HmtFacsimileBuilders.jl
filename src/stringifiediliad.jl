@@ -28,6 +28,7 @@ $(SIGNATURES)
 function legoforsurface(facs::StringifiedIliadFacsimile, pg::AbstractString) :: StringifiedIliadLego
     @info("Format data for $(pg)")
     idx = findfirst(tup -> tup[1] == pg, facs.codex)
+    @warn("Index $(idx)")
     prev = idx == 1 ? "" :  facs.codex[idx - 1][6]
     nxt = idx == length(facs.codex) ? "" : facs.codex[idx + 1][6]
     prevnext = (prev, nxt)
