@@ -102,16 +102,16 @@ exemplar IDs from Iliad texts, and dropping version IDs from scholia.
 The equivalent of a `urncontains` comparison can then be done with
 the highly performant `startswith` function.
 
-In addition, image references are replaced     
+In addition, image references are replaced with markdown or HTML.     
 """
-function stringify(iliad::CitableIliadFacsimile; outputformat = MARKDOWN)
+function stringify(iliad::CitableIliadFacsimile; outputformat = MARKDOWN, thumbheight=300, interleavedwidth=500)
     iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
     otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
 
     imgembedder  =  outputformat == MARKDOWN ? linkedMarkdownImage : linkedHtmlImage
 
-    iliaddsestrings = map(tripl -> (string(tripl.passage), imgembedder(ICT, tripl.image, IIIF), string(tripl.surface)), iliaddse)
-    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), imgembedder(ICT, tripl.image, IIIF), string(tripl.surface)), otherdse)
+    iliaddsestrings = map(tripl -> (string(tripl.passage), imgembedder(ICT, tripl.image, IIIF, ht = interleavedwidth), string(tripl.surface)), iliaddse)
+    otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), imgembedder(ICT, tripl.image, IIIF, ht = interleavedwidth), string(tripl.surface)), otherdse)
 
     dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
     normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
@@ -119,7 +119,7 @@ function stringify(iliad::CitableIliadFacsimile; outputformat = MARKDOWN)
     diplother = map(psg -> (string(dropversion(psg.urn)), psg.text), diplomaticother(iliad).passages)
     normedother = map(psg -> (string(dropversion(psg.urn)), psg.text), normalizedother(iliad).passages)
 
-    pagedata = map(pg -> stringify(pg), iliad.codex)
+    pagedata = map(pg -> stringify(pg, height = thumbheight), iliad.codex)
     scholindex = map(pr -> (string(dropversion(pr[1])), string(pr[2])) , iliad.scholiaindex)
 
     StringifiedIliadFacsimile(
@@ -135,8 +135,8 @@ end
 """Convert `MSPage` object to tuple of markdown.
 $(SIGNATURES)
 """
-function stringify(pg::MSPage, outputformat =  MARKDOWN)
-    embeddedimg =  outputformat == MARKDOWN ?  linkedMarkdownImage(ICT, pg.image, IIIF) : linkedHtmlImage(ICT, pg.image, IIIF)
+function stringify(pg::MSPage, outputformat =  MARKDOWN; height = 500)
+    embeddedimg =  outputformat == MARKDOWN ?  linkedMarkdownImage(ICT, pg.image, IIIF, ht = height) : linkedHtmlImage(ICT, pg.image, IIIF, ht = height)
     (string(pg.urn), pg.label, pg.rv, embeddedimg, pg.sequence, fname(pg.urn))
 end
 

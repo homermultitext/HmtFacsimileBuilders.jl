@@ -4,6 +4,15 @@
 
 `HmtFacsimileBuilders` is a highly generalized framework for generating static-page websites publishing digital facsimiles of edited texts.
 
+Key concepts:
+
+- facsimile builders.  Can work with some kind of data source, identify surfaces, and can provide information to bjild page components for a surface
+- page components (lego blocks)
+- page formatters
+
+## More details
+
+
 It defines an abstract type hierarchy with root type `AbstractFacsimile`.  You can apply three functions to any subtype of `AbstractFacsimile`:
 
 1. `surfaces`: compute a list of all surfaces known to the facsimile builder.
