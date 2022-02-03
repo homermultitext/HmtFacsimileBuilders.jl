@@ -23,11 +23,17 @@ function stringified_iliad_mdpage(lego::StringifiedIliadLego; navigation = true)
     othertext = diplomaticother(lego)
     otherhdr = isempty(othertext) ? "" : "## Other texts ($(length(othertext)) passages)\n\n---"
     otherpassages = []
+    currentsiglum = ""
     for tripl in othertext
         scholref = tripl[1]
-        @warn("look for iliad lines linked to schol. ", scholref)
+        if siglum(scholref) != currentsiglum
+            currentsiglum = siglum(scholref)
+            push!(otherpassages, "### Scholia group: $(currentsiglum)\n\n")
+        end
+
+        @debug("look for iliad lines linked to schol. ", scholref)
         xreff = haskey(lego.scholiatoiliad, scholref) ?  iliadlinks(lego.scholiatoiliad[scholref]) : ""
-        @warn("scholref / xreff", scholref, xreff)
+        @debug("scholref / xreff", scholref, xreff)
         txtdisplay = scholiapassage(tripl)
         push!(otherpassages, txtdisplay * "\n\n" * xreff * "\n\n---")
         
@@ -54,7 +60,7 @@ $(SIGNATURES)
 function iliadlinks(iliadlines)
     lnks = []
     for ref in iliadlines
-        @warn("FORMAT ", ref)
+        @debug("FORMAT ", ref)
         psg = lastcomponent(ref)
         push!(lnks, "[$(psg)](#il_$(psg))")
     end
@@ -66,9 +72,10 @@ function scholiapassage(tripl::Tuple{String, String, String})
     psg = tripl[1]
     txt = tripl[2]
     img = tripl[3]
-    @warn("scholiapassage got psg/txt", psg, txt)
+    @debug("scholiapassage got psg/txt", psg, txt)
+    siglum = psg |> droplastcomponent |> lastpart
 
-    img * "\n\n" * scholionanchor(psg) * "\n\n**" * lastcomponent(psg) * "**: " * txt
+    img * "\n\n" * scholionanchor(psg) * "\n\n**$(siglum) " * lastcomponent(psg) * "**: " * txt
 end
 
 

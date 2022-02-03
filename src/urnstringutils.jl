@@ -30,3 +30,10 @@ $(SIGNATURES)
 function lastpart(s::AbstractString)
     replace(s, r"[^\.]*\." => "")
 end
+
+"""Extract siglum for scholion from a full passage URN.
+$(SIGNATURES)
+"""
+function siglum(s::AbstractString)
+    s |> droplastcomponent |> lastpart
+end
