@@ -5,7 +5,8 @@ Pairings of facsimile builders and page components:
 
 ## `AbstractFacsimile` and `Lego`
 
-The facsimile builder:
+### The facsimile builder: `AbstractFacsimile`
+
 
 ```@docs
 AbstractFacsimile
@@ -14,7 +15,9 @@ facsimile
 legoforsurface
 ```
 
-The page components:
+
+### The page components: `Lego`
+
 
 ```@docs
 Lego
@@ -28,9 +31,20 @@ thumbnail
 
 The `MSFacsimile` is a subtype of `AbstractFacsimile`; `ManuscriptLego` is a subtype of `Lego`.
 
+
+### The facsimile builder: `MSFacsimile`
+
+
+
 ```@docs
 MSFacsimile
 rectosversos
+```
+
+
+### The page components: `ManuscriptLego`
+
+```@docs
 ManuscriptLego
 rectoverso
 ```
@@ -40,8 +54,14 @@ rectoverso
 
 The `IliadFacsimile` is a subtype of `MSFacsimile`; `IliadLego` is a subtype of `ManuscriptLego`.
 
+### The facsimile builder: `IliadFacsimile`
+
 ```@docs
 IliadFacsimile
+```
+
+### The page components: `IliadLego`
+```@docs
 IliadLego
 iliadtext
 othertext
@@ -51,24 +71,40 @@ scholiatoiliad
 
 
 
-## Concrete *Iliad* facsimile builders
 
-These facsimile builders are subtypes of `IliadFacsimile`.
 
-### `CitableIliadFacsimile`
+
+## `CitableIliadFacsimile`
+
+`CitableIliadFacsimile` is a  subtype of `IliadFacsimile`.  It does not 
+have a corresponding fully implemented type of page components: the `CitableIliadFacsimile` serves instead as a source for making `StringifiedIliadFacsimile`s.
+
 
 ```@docs
 CitableIliadFacsimile
 hmtcitable
 ```
-### `StringifiedIliadFacsimile`
+
+## `StringifiedIliadFacsimile` and `StringifiedIliadLego`
+
+`StringifiedIliadFacsimile`  is a subtype of `IliadFacsimile`; `StringifiedIliadLego` is a subtype of `IliadLego`.
+
+### The facsimile builder: `StringifiedIliadFacsimile` 
 
 ```@docs
 StringifiedIliadFacsimile
 stringify
 ```
 
-Page formatters that work with `StringifiedIliadLego`, a subtype of `IliadLego`:
+### The page components: `StringifiedIliadLego`
+
+```@docs
+StringifiedIliadLego
+```
+
+## Page formatters
+
+Page formatters that work with `StringifiedIliadLego`:
 
 ```@docs
 StringifiedIliadLego

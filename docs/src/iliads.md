@@ -5,10 +5,6 @@ archiveroot = joinpath(pwd() |> dirname |> dirname |> dirname, "hmt-archive", "a
 
 # Facsimiles of HMT project *Iliad*s
 
-!!! warning Highly incomplete!
-
-    These brief notes are preliminary and incomplete.
-
 
 While the package's frame is general enough to work with facsimiles of any kind of text-bearing surface (papyri, inscriptions, printed books...), the initial motivation for this package was to be able to publish facsimiles of the Homer Multitext project's editions quickly and easily.
 

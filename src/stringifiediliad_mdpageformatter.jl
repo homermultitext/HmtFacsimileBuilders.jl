@@ -16,10 +16,11 @@ function stringified_iliad_mdpage(lego::StringifiedIliadLego; navigation = true)
     join([
         hdr, 
         nav,
+        thumbnail(lego),
         ilhdr,
 
         otherhdr,
-        thumbnail(lego),
+        
         nav
     ], "\n\n")
 end
@@ -33,11 +34,13 @@ end
 
 function mdnavblock(pr::Tuple{String, String})
     prev = pr[1]
+    prevlabel = replace(replace(prev, ".md" => ""), "." => " ")
     nxt = pr[2]
+    nextlabel = replace(replace(nxt, ".md" => ""), "." => " ")
     lines = [
         "| previous | next |",
         "| --- | --- |",
-        "| [$(prev)](./$(prev)/) | [$(nxt)](./$(nxt)/) |"
+        "| [$(prevlabel)](./$(prev)/) | [$(nextlabel)](./$(nxt)/) |"
     ]
     join(lines, "\n")
 end

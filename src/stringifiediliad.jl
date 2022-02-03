@@ -104,23 +104,23 @@ the highly performant `startswith` function.
 
 In addition, image references are replaced with markdown or HTML.     
 """
-function stringify(iliad::CitableIliadFacsimile; outputformat = MARKDOWN, thumbheight=300, interleavedwidth=500)
-    iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
-    otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), iliad.dsec.data)
+function stringify(facs::CitableIliadFacsimile; outputformat = MARKDOWN, thumbheight=300, interleavedwidth=500)
+    iliaddse = filter(trip -> urncontains(ILIAD_URN, trip.passage), facs.dsec.data)
+    otherdse = filter(trip -> ! urncontains(ILIAD_URN, trip.passage), facs.dsec.data)
 
     imgembedder  =  outputformat == MARKDOWN ? linkedMarkdownImage : linkedHtmlImage
 
     iliaddsestrings = map(tripl -> (string(tripl.passage), imgembedder(ICT, tripl.image, IIIF, ht = interleavedwidth), string(tripl.surface)), iliaddse)
     otherdsestrings = map(tripl -> (string(dropversion(tripl.passage)), imgembedder(ICT, tripl.image, IIIF, ht = interleavedwidth), string(tripl.surface)), otherdse)
 
-    dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(iliad).passages)
-    normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(iliad).passages)
+    dipliliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), diplomaticiliad(facs).passages)
+    normediliad = map(psg -> (string(dropexemplar(psg.urn)), psg.text), normalizediliad(facs).passages)
 
-    diplother = map(psg -> (string(dropversion(psg.urn)), psg.text), diplomaticother(iliad).passages)
-    normedother = map(psg -> (string(dropversion(psg.urn)), psg.text), normalizedother(iliad).passages)
+    diplother = map(psg -> (string(dropversion(psg.urn)), psg.text), diplomaticother(facs).passages)
+    normedother = map(psg -> (string(dropversion(psg.urn)), psg.text), normalizedother(facs).passages)
 
-    pagedata = map(pg -> stringify(pg, height = thumbheight), iliad.codex)
-    scholindex = map(pr -> (string(dropversion(pr[1])), string(pr[2])) , iliad.scholiaindex)
+    pagedata = map(pg -> stringify(pg, height = thumbheight), facs.codex)
+    scholindex = map(pr -> (string(dropversion(pr[1])), string(pr[2])) , facs.scholiaindex)
 
     StringifiedIliadFacsimile(
         iliaddsestrings, 
