@@ -54,6 +54,33 @@ function rectoverso(lego::StringifiedIliadLego)
 end
 
 
+function diplomaticiliad(lego::StringifiedIliadLego)
+    lego.iliadtexttuples
+end
+
+
+function diplomaticother(lego::StringifiedIliadLego)
+    lego.othertexttuples
+end
+
+
+function scholiatoiliad(lego::StringifiedIliadLego)
+    lego.scholiatoiliad
+end
+
+
+function iliadtoscholia(lego::StringifiedIliadLego)
+    lego.iliadtoscholia
+end
+
+
+
+
+
+
+
+
+
 
 """Compose facsimile for a single page of the Venetus A manuscript.
 $(SIGNATURES)

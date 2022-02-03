@@ -31,10 +31,17 @@ function normalizedother(facs::T) where {T <: IliadFacsimile}
     throw(DomainError(facs, "`normalizedother` not implemented for type $(T)"))
 end
 
-"""Catch subtypes that fail to implement `scholiaindex` function.
+"""Catch subtypes that fail to implement `scholiatoiliad` function.
 $(SIGNATURES)
 """
-function scholiaindex(facs::T) where {T <: IliadFacsimile}
-    throw(DomainError(facs, "`scholiaindex` not implemented for type $(T)"))
+function scholiatoiliad(facs::T) where {T <: IliadFacsimile}
+    throw(DomainError(facs, "`scholiatoiliad` not implemented for type $(T)"))
 end
 
+
+"""Catch subtypes that fail to implement `iliadtoscholia` function.
+$(SIGNATURES)
+"""
+function iliadtoscholia(facs::T) where {T <: IliadFacsimile}
+    throw(DomainError(facs, "`iliadtoscholia` not implemented for type $(T)"))
+end
