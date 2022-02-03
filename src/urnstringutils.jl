@@ -1,4 +1,13 @@
-    
+   
+"""Strip of subreferences and range refernces from a passage compnoent of a URN.
+$(SIGNATURES)  
+"""
+function psgbegin(psg::AbstractString)
+    dropsubs = replace(psg, r"@.+" => "")
+    replace(dropsubs, r"-.*" => "" )
+end
+
+
 """Collapse passage component of a string representing a
 CTS URN by one level.
 $(SIGNATURES)

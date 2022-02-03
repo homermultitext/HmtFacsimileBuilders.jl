@@ -61,8 +61,9 @@ function iliadlinks(iliadlines)
     lnks = []
     for ref in iliadlines
         @debug("FORMAT ", ref)
-        psg = lastcomponent(ref)
-        push!(lnks, "[$(psg)](#il_$(psg))")
+        psgraw = lastcomponent(ref)
+        psg = psgraw |> psgbegin
+        push!(lnks, "[$(psgraw)](#il_$(psg))")
     end
     "Comments on " * join(lnks, ", ")
 end
