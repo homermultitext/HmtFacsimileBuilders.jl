@@ -12,19 +12,25 @@ using EditorsRepo, HmtArchive
 
 ## Hierarchy of abstract classes and their functions:
 export AbstractFacsimile
-export surfaces
+export surfaces, legoforsurface
 export facsimile 
+
+export Lego
+export filename, pageid, pagelabel, thumbnail
 
 export MSFacsimile
 export rectoversos
+
+export ManuscriptLego
+export rectoverso
+
 
 export IliadFacsimile
 export diplomaticiliad, normalizediliad
 export diplomaticother, normalizedother
 export scholiaindex
 
-export Lego
-export filename
+export IliadLego
 
 # Concrete implementations:
 export CitableIliadFacsimile, hmtcitable

@@ -1,7 +1,7 @@
 name = "HmtFacsimileBuilders"
 uuid = "51afb9e0-fec5-4c9c-a749-28047e6f0de5"
 authors = ["Neel Smith <dnsmith.neel@gmail.com>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 CitableBase = "d6f014bd-995c-41bd-9893-703339864534"

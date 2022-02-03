@@ -17,6 +17,7 @@ facsimile for a single page.  The components are:
 """
 struct StringifiedIliadLego <: Lego
     filename::AbstractString
+    pageid::AbstractString
     pagelabel::AbstractString
     thumbnail::AbstractString
     rv::AbstractString
@@ -34,12 +35,37 @@ function filename(lego::StringifiedIliadLego)
     lego.filename
 end
 
+
+function thumbnail(lego::StringifiedIliadLego)
+    lego.thumbnail
+end
+
+function pagelabel(lego::StringifiedIliadLego)
+    lego.pagelabel
+end
+
+function pageid(lego::StringifiedIliadLego)
+    lego.pageid
+end
+
+
+function rectoverso(lego::StringifiedIliadLego)
+    lego.rv
+end
+
+
+
 """Compose facsimile for a single page of the Venetus A manuscript.
 $(SIGNATURES)
 """
 function stringified_iliad_mdpage(lego::StringifiedIliadLego; navigation = true)
     @info("Formatting page for $(lego.pagelabel)")
     lego
+end
+
+
+function prevnext(lego::StringifiedIliadLego)
+    lego.prevnext
 end
 
 

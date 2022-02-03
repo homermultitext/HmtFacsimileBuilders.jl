@@ -82,6 +82,7 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
 
     StringifiedIliadLego(
         fname,
+        pg,
         pagelabel, 
         img,
         rv, 
