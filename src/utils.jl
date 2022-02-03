@@ -21,3 +21,6 @@ function adjacentstringified()
     hmtcite = adjacent() |> hmtcitable
     (hmtcite, stringify(hmtcite))
 end
+
+
+# Text trimming.

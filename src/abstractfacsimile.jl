@@ -11,17 +11,6 @@ function surfaces(facs::T) where {T <: AbstractFacsimile}
 end
 
 
-#=
-"""Catch subtypes that fail to implement `dserecords` function.
-$(SIGNATURES)
-All facsimiles have DSE records linking texts, surfaces and images.
-"""
-function dserecords(facs::T) where {T <: AbstractFacsimile}
-    throw(DomainError(facs, "`dserecords` not implemented for type $(T)"))
-end
-=#
-
-
 """Catch subtypes that fail to implement `legoforsurface`.
 $(SIGNATURES)
 """

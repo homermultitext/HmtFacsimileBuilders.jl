@@ -28,7 +28,7 @@ export rectoverso
 export IliadFacsimile
 export diplomaticiliad, normalizediliad
 export diplomaticother, normalizedother
-export scholiaindex
+export scholiatoiliad, iliadtoscholia
 
 export IliadLego
 
@@ -42,6 +42,7 @@ export stringified_iliad_mdpage, stringified_iliad_mdimage_browser
 
 include("constants.jl")
 include("outputtypes.jl")
+include("urnstringutils.jl")
 
 include("abstractfacsimile.jl")
 include("abstractlego.jl")

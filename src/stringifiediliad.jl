@@ -26,23 +26,26 @@ end
 $(SIGNATURES)
 """
 function legoforsurface(facs::StringifiedIliadFacsimile, pg::AbstractString) :: StringifiedIliadLego
-    @info("Format data for $(pg)")
+    #@info("Organize lego for $(pg)")
     idx = findfirst(tup -> tup[1] == pg, facs.codex)
-    @warn("Index $(idx)")
+    #@warn("Index $(idx)")
     prev = idx == 1 ? "" :  facs.codex[idx - 1][6]
     nxt = idx == length(facs.codex) ? "" : facs.codex[idx + 1][6]
     prevnext = (prev, nxt)
-    pginfo = filter(p -> startswith(p[1], pg),  facs.codex)[1]
+    
+    pginfo = filter(p -> p[1] == pg,  facs.codex)[1]
     pagelabel = pginfo[2]
     rv = pginfo[3]
     img = pginfo[4]
     fname = pginfo[6]
     
-    iliaddses = filter(tup -> startswith(tup[3],pg), facs.iliaddse)
+    iliaddses = filter(tup -> tup[3] == pg, facs.iliaddse)
     # Unify text ref, text content and image:
     iliaddiplpsg = Tuple{String, String, String}[]
     for (txturn,img) in map(tup -> (tup[1], tup[2]), iliaddses)
-        psgpair = filter(pr -> startswith(txturn, pr[1]), facs.diplomaticiliad)
+        @debug("Mapping $(txturn) to tuple for stringified iliad")
+
+        psgpair = filter(pr -> txturn == pr[1], facs.diplomaticiliad)
         if isempty(psgpair)
             @debug("NO ILIAD TEXTS indexed for $(txturn)")
         else
