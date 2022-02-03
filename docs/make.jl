@@ -17,7 +17,7 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "HMT Iliads" => "iliads.md",
-        "Component part" => "legos.md",
+        "Page components and page formatters" => "legos.md",
         "API documentation" => "apis.md"
     ]
 )
