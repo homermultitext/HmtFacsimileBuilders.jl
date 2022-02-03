@@ -15,19 +15,19 @@ function stringified_iliad_mdpage(lego::StringifiedIliadLego; navigation = true)
     for tripl in iltext
         #@debug("TRIPLE FOR ILIAD", tripl[1])
         txtdisplay = iliadpassage(tripl)
-        xreff = haskey(lego.iliadtoscholia, tripl[1]) ?             scholialinks(lego.iliadtoscholia[tripl[1]]) : ""
+        xreff = haskey(lego.iliadtoscholia, tripl[1]) ? scholialinks(lego.iliadtoscholia[tripl[1]]) : ""
         push!(iliadpassages, txtdisplay * "\n\n" * xreff * "\n\n---")
 
     end
 
     othertext = diplomaticother(lego)
-    otherhdr = isempty(othertext) ? "" : "## Other texts\n\n($(length(othertext)) passages)"
+    otherhdr = isempty(othertext) ? "" : "## Other texts ($(length(othertext)) passages)\n\n---"
     otherpassages = []
     for tripl in othertext
-        scholref = collapsescholionref(tripl[1])
-        @debug("look for ", scholref)
+        scholref = tripl[1]
+        @warn("look for iliad lines linked to schol. ", scholref)
         xreff = haskey(lego.scholiatoiliad, scholref) ?  iliadlinks(lego.scholiatoiliad[scholref]) : ""
-        
+        @warn("scholref / xreff", scholref, xreff)
         txtdisplay = scholiapassage(tripl)
         push!(otherpassages, txtdisplay * "\n\n" * xreff * "\n\n---")
         
@@ -54,6 +54,7 @@ $(SIGNATURES)
 function iliadlinks(iliadlines)
     lnks = []
     for ref in iliadlines
+        @warn("FORMAT ", ref)
         psg = lastcomponent(ref)
         push!(lnks, "[$(psg)](#il_$(psg))")
     end
@@ -61,10 +62,11 @@ function iliadlinks(iliadlines)
 end
 
 function scholiapassage(tripl::Tuple{String, String, String})
+
     psg = tripl[1]
     txt = tripl[2]
     img = tripl[3]
-   
+    @warn("scholiapassage got psg/txt", psg, txt)
 
     img * "\n\n" * scholionanchor(psg) * "\n\n**" * lastcomponent(psg) * "**: " * txt
 end
@@ -76,8 +78,9 @@ end
 $(SIGNATURES)
 """
 function scholionanchor(psg::AbstractString)
-    ref = lastcomponent(psg) |> collapsescholionref
+    ref = lastcomponent(psg)
     siglum = psg |> droplastcomponent |> lastpart
+    @debug("Ancorhing psg: ref/siglum ", psg, ref, siglum)
     idstr = siglum * "." * ref
 
 
@@ -89,7 +92,6 @@ end
 $(SIGNATURES)
 """
 function scholialinks(scholia)
-
     lnks = []
     for s in scholia
         ref = lastcomponent(s)
@@ -101,7 +103,7 @@ function scholialinks(scholia)
 
     end
 
-    "Commented on by " * join(lnks, " ")
+    ">Commented on by " * join(lnks, ", ")
 end
 
 
