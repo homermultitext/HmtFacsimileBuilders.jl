@@ -51,9 +51,12 @@ include("abstractiliad.jl")
 # Concrete implementations
 # Partial:
 include("citableiliad.jl")
+
 # Complete:
 include("stringifiediliadlego.jl")
 include("stringifiediliad.jl")
+include("stringifiediliad_mdpageformatter.jl")
+include("stringifiediliad_mdimageformatter.jl")
 
 
 include("utils.jl")
