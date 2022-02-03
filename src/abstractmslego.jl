@@ -1,4 +1,5 @@
 
+"""Page components for a manuscript facseimile."""
 abstract type ManuscriptLego <: Lego end
 
 """Catch subtypes that fail to implement `rectoverso` function.

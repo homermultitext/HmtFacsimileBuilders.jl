@@ -25,23 +25,23 @@ end
 """Assemble a lego block of text structures for a single page.
 $(SIGNATURES)
 """
-function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) :: StringifiedIliadLego
+function legoforsurface(facs::StringifiedIliadFacsimile, pg::AbstractString) :: StringifiedIliadLego
     @info("Format data for $(pg)")
-    idx = findfirst(tup -> tup[1] == pg, iliad.codex)
-    prev = idx == 1 ? "" :  iliad.codex[idx - 1][6]
-    nxt = idx == length(iliad.codex) ? "" : iliad.codex[idx + 1][6]
+    idx = findfirst(tup -> tup[1] == pg, facs.codex)
+    prev = idx == 1 ? "" :  facs.codex[idx - 1][6]
+    nxt = idx == length(facs.codex) ? "" : facs.codex[idx + 1][6]
     prevnext = (prev, nxt)
-    pginfo = filter(p -> startswith(p[1], pg),  iliad.codex)[1]
+    pginfo = filter(p -> startswith(p[1], pg),  facs.codex)[1]
     pagelabel = pginfo[2]
     rv = pginfo[3]
     img = pginfo[4]
     fname = pginfo[6]
     
-    iliaddses = filter(tup -> startswith(tup[3],pg), iliad.iliaddse)
+    iliaddses = filter(tup -> startswith(tup[3],pg), facs.iliaddse)
     # Unify text ref, text content and image:
     iliaddiplpsg = Tuple{String, String, String}[]
     for (txturn,img) in map(tup -> (tup[1], tup[2]), iliaddses)
-        psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticiliad)
+        psgpair = filter(pr -> startswith(txturn, pr[1]), facs.diplomaticiliad)
         if isempty(psgpair)
             @debug("NO ILIAD TEXTS indexed for $(txturn)")
         else
@@ -49,10 +49,12 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
         end
     end
 
-    otherdses = filter(tup -> startswith(tup[3],pg), iliad.otherdse)
+    otherdses = filter(tup -> startswith(tup[3],pg), facs.otherdse)
     otherdiplpsg = Tuple{String, String, String}[]
     for (txturn,img) in map(tup -> (tup[1], tup[2]), otherdses)
-        psgpair = filter(pr -> startswith(txturn, pr[1]), iliad.diplomaticother)
+        
+        psgpair = filter(pr -> startswith(pr[1], txturn), facs.diplomaticother)
+        @debug("For $(txturn), got $(psgpair)")
         if isempty(psgpair)
             @debug("NO NON-ILIADIC TEXTS indexed $(txturn)")
         else
@@ -63,7 +65,7 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
     iliadtoscholia = Dict{String, Vector{String}}()
     for tripleset in iliaddses
         @debug("Looking for $(tripleset[1])")
-        pairs = filter(pr -> pr[2] ==  tripleset[1], iliad.scholiaindex)
+        pairs = filter(pr -> pr[2] ==  tripleset[1], facs.scholiaindex)
         if ! isempty(pairs)
             schollist = map(tup -> tup[1], pairs)
             iliadtoscholia[tripleset[1]] = schollist
@@ -73,7 +75,7 @@ function legoforsurface(iliad::StringifiedIliadFacsimile, pg::AbstractString) ::
     scholiatoiliad = Dict{String, Vector{String}}()
     for tripleset in otherdses
         @debug("Looking for $(tripleset[1])")
-        pairs = filter(pr -> pr[1] ==  tripleset[1], iliad.scholiaindex)
+        pairs = filter(pr -> pr[1] ==  tripleset[1], facs.scholiaindex)
         if ! isempty(pairs)
             iliadlist = map(tup -> tup[1], pairs)
             scholiatoiliad[tripleset[1]] = iliadlist
@@ -125,8 +127,8 @@ function stringify(facs::CitableIliadFacsimile; outputformat = MARKDOWN, thumbhe
     StringifiedIliadFacsimile(
         iliaddsestrings, 
         otherdsestrings,
-        dipliliad, normediliad,
-        diplother, normedother,
+        dipliliad, diplother,
+        normediliad, normedother,
         pagedata,
         scholindex
     )

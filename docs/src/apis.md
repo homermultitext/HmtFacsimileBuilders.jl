@@ -38,7 +38,7 @@ The `MSFacsimile` is a subtype of `AbstractFacsimile`; `ManuscriptLego` is a sub
 
 ```@docs
 MSFacsimile
-rectosversos
+rectoversos
 ```
 
 

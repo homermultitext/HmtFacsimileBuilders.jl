@@ -27,7 +27,7 @@ end
 
 """Identification of pages as recto or verso.
 $(SIGNATURES)
-Required by `MSFacsimile`.
+Required by `MSFacsimile` abstraction.
 """
 function rectoversos(iliad::CitableIliadFacsimile)
     map(pg -> (pg.urn, pg.rv), iliad.codex)
@@ -50,14 +50,12 @@ function normalizediliad(iliad::CitableIliadFacsimile)
 end
 
 
-
-
 """Diplomatic edition of non-Iliadic texts.
 $(SIGNATURES)
 Required by `IliadFacsimile`.
 """
-function diplomaticother(iliad::CitableIliadFacsimile)
-    filter(psg -> ! urncontains(ILIAD_URN, psg.urn), iliad.diplomatic.passages) |> CitableTextCorpus
+function diplomaticother(fax::CitableIliadFacsimile)
+    filter(psg -> ! urncontains(ILIAD_URN, psg.urn), fax.diplomatic.passages) |> CitableTextCorpus
 end
 
 """Normalized edition of non-Iliadic texts.
