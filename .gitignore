@@ -3,3 +3,4 @@ Manifest.toml
 settings.json
 scratch/
 docs/build/
+.vscode/
